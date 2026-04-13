@@ -1,3 +1,5 @@
+index.html----
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,6 +35,7 @@
 </html>
 
 
+style.css ------
 
 body {
   background: #0f0f0f;
@@ -117,6 +120,7 @@ button:hover { background: #e0c068; }
 .empty  { color: #444; font-size: 0.85rem; text-align: center; padding: 16px 0; }
 
 
+script.js ------
 
 var entries = JSON.parse(localStorage.getItem('lifeos')) || [];
 render();
