@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Life OS — Decision Journal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="card">
+  <a href="#" class="back">← Life OS</a>
+  <h1>📓 Decision Journal</h1>
+  <p>One decision a day. Compounded over years.</p>
+
+  <div class="field">
+    <label>What decision did I make today?</label>
+    <textarea id="decision" placeholder="e.g. I decided to skip gaming and code instead..."></textarea>
+  </div>
+
+  <div class="field">
+    <label>What was my reasoning?</label>
+    <textarea id="reasoning" placeholder="e.g. Because I want to build something real before summer..."></textarea>
+  </div>
+
+  <div class="field">
+    <label>What would I do differently?</label>
+    <textarea id="different" placeholder="e.g. I would have started earlier in the day..."></textarea>
+  </div>
+
+  <button onclick="save()">Save Entry</button>
+
+  <div id="log">
+    <h2>PAST ENTRIES</h2>
+    <p class="empty" id="empty">No entries yet. Log your first decision above.</p>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
