@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Life OS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="card">
+  <h1>📚 Life OS — Study Tracker</h1>
+  <p>Rate your understanding, not your hours.</p>
+
+  <input type="text" id="topic" placeholder="e.g. Newton's Laws, Electrochemistry...">
+
+  <div class="row">Can I explain it clearly? <span id="v1">3</span></div>
+  <input type="range" min="1" max="5" value="3" id="s1" oninput="v1.textContent=this.value">
+
+  <div class="row">Do I understand the logic? <span id="v2">3</span></div>
+  <input type="range" min="1" max="5" value="3" id="s2" oninput="v2.textContent=this.value">
+
+  <div class="row">Can I apply it to new problems? <span id="v3">3</span></div>
+  <input type="range" min="1" max="5" value="3" id="s3" oninput="v3.textContent=this.value">
+
+  <button onclick="save()">Save Entry</button>
+
+  <div id="log">
+    <h2>TODAY'S ENTRIES</h2>
+    <p class="empty" id="empty">No entries yet.</p>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
