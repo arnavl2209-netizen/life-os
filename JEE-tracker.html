@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Life OS — JEE Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="card">
+  <h1>📊 JEE Progress Tracker</h1>
+  <p class="subtitle">Track questions, accuracy, and weak topics daily.</p>
+
+  <label>Topic Name</label>
+  <input type="text" id="topic" placeholder="e.g. Newton's Laws, Organic Chemistry...">
+
+  <label>Subject</label>
+  <select id="subject">
+    <option value="Physics">Physics</option>
+    <option value="Chemistry">Chemistry</option>
+    <option value="Maths">Maths</option>
+  </select>
+
+  <div class="row">
+    <div class="col">
+      <label>Questions Attempted</label>
+      <input type="text" id="attempted" placeholder="e.g. 20">
+    </div>
+    <div class="col">
+      <label>Questions Correct</label>
+      <input type="text" id="correct" placeholder="e.g. 14">
+    </div>
+  </div>
+
+  <label>Weak Area (what confused you?)</label>
+  <input type="text" id="weak" placeholder="e.g. Sign convention in optics...">
+
+  <button onclick="save()">Log Session</button>
+
+  <div class="stats" id="statsBox" style="display:none">
+    <span>Sessions <b id="statSessions">0</b></span>
+    <span>Questions <b id="statQuestions">0</b></span>
+    <span>Accuracy <b id="statAccuracy">0%</b></span>
+    <span>Best <b id="statBest">—</b></span>
+  </div>
+
+  <div id="log">
+    <h2>SESSION LOG</h2>
+    <p class="empty" id="empty">No sessions yet. Log your first study session above.</p>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
