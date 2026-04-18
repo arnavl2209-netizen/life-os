@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Life OS</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0f0f0f;
+      color: #f0f0f0;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 30px 20px;
+    }
+    .container {
+      width: 100%;
+      max-width: 520px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      font-size: 2.2rem;
+      color: #c9a84c;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+    }
+    .header p {
+      color: #555;
+      font-size: 0.9rem;
+    }
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .feature-card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 24px;
+      text-decoration: none;
+      color: #f0f0f0;
+      transition: border-color 0.2s, transform 0.2s;
+      display: block;
+    }
+    .feature-card:hover {
+      border-color: #c9a84c;
+      transform: translateY(-2px);
+    }
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+    .feature-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #c9a84c;
+      margin-bottom: 6px;
+    }
+    .feature-desc {
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    .live {
+      background: #1a3a1a;
+      color: #4caf50;
+      border: 1px solid #4caf50;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.78rem;
+      color: #333;
+    }
+    .footer span { color: #c9a84c; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>⚡ LIFE OS</h1>
+    <p>A self-operating system for students who think in systems, not hours.</p>
+  </div>
+
+  <div class="grid">
+    <a href="Study-tracker/index.html" class="feature-card">
+      <div class="feature-icon">📚</div>
+      <div class="feature-title">Study Tracker</div>
+      <div class="feature-desc">Rate your understanding across three axes — explain, logic, apply. Track depth not hours.</div>
+      <span class="tag live">✅ Live</span>
+    </a>
+
+    <a href="Journal-tracker/index.html" class="feature-card">
+      <div class="feature-icon">📓</div>
+      <div class="feature-title">Decision Journal</div>
+      <div class="feature-desc">Log one decision daily — what you decided, your reasoning, and what you'd do differently.</div>
+      <span class="tag live">✅ Live</span>
+    </a>
+
+    <a href="JEE-tracker/index.html" class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">JEE Progress Tracker</div>
+      <div class="feature-desc">Track questions solved, accuracy percentage, and weak areas across Physics, Chemistry and Maths.</div>
+      <span class="tag live">✅ Live</span>
+    </a>
+  </div>
+
+  <div class="footer">
+    Built by <span>Arnav</span> · Life OS v1.0 · 2026
+  </div>
+</div>
+</body>
+</html>
