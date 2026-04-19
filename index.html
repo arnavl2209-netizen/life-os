@@ -5,122 +5,279 @@
   <title>Life OS</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      background: #0f0f0f;
+      background: #0a0a0a;
       color: #f0f0f0;
-      font-family: sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    .bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(ellipse at 20% 50%, #1a1200 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 20%, #0a1a0a 0%, transparent 50%),
+                  #0a0a0a;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 60px 24px 40px;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      margin-bottom: 60px;
+      animation: fadeUp 0.8s ease forwards;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      padding: 6px 16px;
+      background: #1a1400;
+      border: 1px solid #c9a84c33;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      color: #c9a84c;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #c9a84c;
+      letter-spacing: 4px;
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+
+    .hero h1 span {
+      color: #fff;
+    }
+
+    .hero-sub {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .hero-name {
+      font-size: 0.82rem;
+      color: #333;
+    }
+
+    .hero-name span { color: #c9a84c; }
+
+    /* Stats bar */
+    .stats-bar {
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 30px 20px;
+      gap: 32px;
+      margin-bottom: 48px;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+      opacity: 0;
     }
-    .container {
-      width: 100%;
-      max-width: 520px;
-    }
-    .header {
+
+    .stat {
       text-align: center;
-      margin-bottom: 40px;
     }
-    .header h1 {
-      font-size: 2.2rem;
+
+    .stat-num {
+      font-size: 1.4rem;
+      font-weight: bold;
       color: #c9a84c;
-      margin-bottom: 8px;
-      letter-spacing: 2px;
     }
-    .header p {
-      color: #555;
-      font-size: 0.9rem;
+
+    .stat-label {
+      font-size: 0.72rem;
+      color: #444;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
+
+    /* Cards */
     .grid {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
+      animation: fadeUp 0.8s ease 0.4s forwards;
+      opacity: 0;
     }
-    .feature-card {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
+
+    .card {
+      background: #111;
+      border: 1px solid #1e1e1e;
       border-radius: 16px;
       padding: 24px;
       text-decoration: none;
       color: #f0f0f0;
-      transition: border-color 0.2s, transform 0.2s;
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: border-color 0.3s, transform 0.3s, background 0.3s;
+      position: relative;
+      overflow: hidden;
     }
-    .feature-card:hover {
-      border-color: #c9a84c;
-      transform: translateY(-2px);
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+      background: #c9a84c;
+      transform: scaleY(0);
+      transition: transform 0.3s;
+      transform-origin: bottom;
     }
-    .feature-icon {
-      font-size: 1.8rem;
-      margin-bottom: 12px;
+
+    .card:hover {
+      border-color: #c9a84c33;
+      transform: translateX(6px);
+      background: #141414;
     }
-    .feature-title {
-      font-size: 1.1rem;
+
+    .card:hover::before {
+      transform: scaleY(1);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      min-width: 48px;
+      text-align: center;
+    }
+
+    .card-body { flex: 1; }
+
+    .card-title {
+      font-size: 1rem;
       font-weight: bold;
       color: #c9a84c;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
-    .feature-desc {
-      font-size: 0.85rem;
-      color: #666;
+
+    .card-desc {
+      font-size: 0.82rem;
+      color: #555;
       line-height: 1.5;
-      margin-bottom: 12px;
     }
+
+    .card-arrow {
+      font-size: 1.2rem;
+      color: #333;
+      transition: color 0.3s, transform 0.3s;
+    }
+
+    .card:hover .card-arrow {
+      color: #c9a84c;
+      transform: translateX(4px);
+    }
+
     .tag {
       display: inline-block;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
       font-weight: bold;
-    }
-    .live {
+      margin-top: 6px;
       background: #1a3a1a;
       color: #4caf50;
-      border: 1px solid #4caf50;
+      border: 1px solid #4caf5066;
     }
+
+    /* Footer */
     .footer {
       text-align: center;
-      margin-top: 40px;
-      font-size: 0.78rem;
-      color: #333;
+      margin-top: 48px;
+      font-size: 0.75rem;
+      color: #2a2a2a;
+      animation: fadeUp 0.8s ease 0.6s forwards;
+      opacity: 0;
     }
+
     .footer span { color: #c9a84c; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero { opacity: 0; animation: fadeUp 0.8s ease 0s forwards; }
   </style>
 </head>
 <body>
+<div class="bg"></div>
+
 <div class="container">
-  <div class="header">
-    <h1>⚡ LIFE OS</h1>
-    <p>A self-operating system for students who think in systems, not hours.</p>
+  <div class="hero">
+    <div class="hero-tag">⚡ Personal Operating System</div>
+    <h1>LIFE <span>OS</span></h1>
+    <p class="hero-sub">A self-operating system for students<br>who think in systems, not hours.</p>
+    <p class="hero-name">Built by <span>Arnav</span> · v1.0 · 2026</p>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Features</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">54+</div>
+      <div class="stat-label">Commits</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Days Built</div>
+    </div>
   </div>
 
   <div class="grid">
-    <a href="Study-tracker/index.html" class="feature-card">
-      <div class="feature-icon">📚</div>
-      <div class="feature-title">Study Tracker</div>
-      <div class="feature-desc">Rate your understanding across three axes — explain, logic, apply. Track depth not hours.</div>
-      <span class="tag live">✅ Live</span>
+    <a href="Study-tracker/index.html" class="card">
+      <div class="card-icon">📚</div>
+      <div class="card-body">
+        <div class="card-title">Study Tracker</div>
+        <div class="card-desc">Rate understanding across explain, logic and apply. Track depth not hours.</div>
+        <span class="tag">✅ Live</span>
+      </div>
+      <div class="card-arrow">→</div>
     </a>
 
-    <a href="Journal-tracker/index.html" class="feature-card">
-      <div class="feature-icon">📓</div>
-      <div class="feature-title">Decision Journal</div>
-      <div class="feature-desc">Log one decision daily — what you decided, your reasoning, and what you'd do differently.</div>
-      <span class="tag live">✅ Live</span>
+    <a href="Journal-tracker/index.html" class="card">
+      <div class="card-icon">📓</div>
+      <div class="card-body">
+        <div class="card-title">Decision Journal</div>
+        <div class="card-desc">Log one decision daily — what you decided, your reasoning, what you'd change.</div>
+        <span class="tag">✅ Live</span>
+      </div>
+      <div class="card-arrow">→</div>
     </a>
 
-    <a href="JEE-tracker/index.html" class="feature-card">
-      <div class="feature-icon">📊</div>
-      <div class="feature-title">JEE Progress Tracker</div>
-      <div class="feature-desc">Track questions solved, accuracy percentage, and weak areas across Physics, Chemistry and Maths.</div>
-      <span class="tag live">✅ Live</span>
+    <a href="JEE-tracker/index.html" class="card">
+      <div class="card-icon">📊</div>
+      <div class="card-body">
+        <div class="card-title">JEE Progress Tracker</div>
+        <div class="card-desc">Track questions, accuracy and weak areas across Physics, Chemistry and Maths.</div>
+        <span class="tag">✅ Live</span>
+      </div>
+      <div class="card-arrow">→</div>
     </a>
   </div>
 
   <div class="footer">
-    Built by <span>Arnav</span> · Life OS v1.0 · 2026
+    <p>Life OS · Built with HTML, CSS, JavaScript · <span>github.com/arnavl2209-netizen</span></p>
   </div>
 </div>
 </body>
