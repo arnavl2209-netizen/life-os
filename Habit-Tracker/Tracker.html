@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Life OS — Habit Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <a href="../index.html" class="back">← Life OS</a>
+    <h1>🔥 Habit Tracker</h1>
+    <p class="subtitle">Build streaks. Build yourself.</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span>Today's Progress</span>
+      <span id="progressText">0 / 0</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <div id="habitList"></div>
+
+  <div class="add-section">
+    <input type="text" id="newHabit" placeholder="Add a new habit...">
+    <button onclick="addHabit()">+ Add</button>
+  </div>
+
+  <div class="streak-section">
+    <h2>🏆 Best Streaks</h2>
+    <div id="streakList"></div>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
