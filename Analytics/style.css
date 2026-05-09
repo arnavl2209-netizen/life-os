@@ -1,0 +1,88 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #0a0a0a;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  padding: 30px 20px;
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+}
+
+.header { margin-bottom: 28px; }
+
+.back {
+  display: inline-block;
+  color: #c9a84c;
+  font-size: 0.82rem;
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+
+h1 { color: #c9a84c; font-size: 1.5rem; margin-bottom: 4px; }
+.subtitle { color: #555; font-size: 0.85rem; margin-bottom: 0; }
+
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-num {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #c9a84c;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.chart-card {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.chart-card h2 {
+  font-size: 1rem;
+  color: #c9a84c;
+  margin-bottom: 4px;
+}
+
+.chart-sub {
+  font-size: 0.78rem;
+  color: #444;
+  margin-bottom: 16px;
+}
+
+canvas { max-height: 220px; }
+
+.empty {
+  color: #333;
+  font-size: 0.82rem;
+  text-align: center;
+  padding: 20px 0;
+  display: none;
+}
