@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Life OS — Analytics</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <a href="../index.html" class="back">← Life OS</a>
+    <h1>📈 Analytics Dashboard</h1>
+    <p class="subtitle">Your progress. Visualized.</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" id="totalStudy">0</div>
+      <div class="stat-label">Study Sessions</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="totalJEE">0</div>
+      <div class="stat-label">JEE Sessions</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="totalHabits">0</div>
+      <div class="stat-label">Habits Tracked</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="totalDecisions">0</div>
+      <div class="stat-label">Decisions Logged</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h2>📚 Study Depth Over Time</h2>
+    <p class="chart-sub">Average understanding score per session</p>
+    <canvas id="studyChart"></canvas>
+    <p class="empty" id="studyEmpty">No study sessions logged yet.</p>
+  </div>
+
+  <div class="chart-card">
+    <h2>📊 JEE Accuracy Trend</h2>
+    <p class="chart-sub">Accuracy percentage per session</p>
+    <canvas id="jeeChart"></canvas>
+    <p class="empty" id="jeeEmpty">No JEE sessions logged yet.</p>
+  </div>
+
+  <div class="chart-card">
+    <h2>🔥 Habit Streaks</h2>
+    <p class="chart-sub">Current streak per habit</p>
+    <canvas id="habitChart"></canvas>
+    <p class="empty" id="habitEmpty">No habits tracked yet.</p>
+  </div>
+
+</div>
+<script src="script.js"></script>
+</body>
+</html>
