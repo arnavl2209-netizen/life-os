@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Life OS — Pomodoro</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 30px 20px;
+      min-height: 100vh;
+    }
+    .container { width: 100%; max-width: 480px; }
+    .back { display: inline-block; color: #c9a84c; font-size: 0.82rem; text-decoration: none; margin-bottom: 16px; }
+    h1 { color: #c9a84c; font-size: 1.5rem; margin-bottom: 4px; }
+    .subtitle { color: #555; font-size: 0.85rem; margin-bottom: 24px; }
+    .timer-card {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 20px;
+      padding: 28px 24px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .mode-tabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 28px; }
+    .mode-btn {
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid #2a2a2a;
+      background: none;
+      color: #555;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-btn.active { background: #c9a84c; border-color: #c9a84c; color: #000; font-weight: bold; }
+    .timer-display {
+      font-size: 80px;
+      font-weight: 200;
+      letter-spacing: 4px;
+      color: #f0f0f0;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 20px;
+      transition: color 0.3s;
+    }
+    .timer-display.running { color: #c9a84c; }
+    .timer-display.brk { color: #4caf50; }
+    .session-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #1e1e1e; transition: background 0.3s; }
+    .dot.done { background: #c9a84c; }
+    .dot.current { background: #c9a84c44; border: 1px solid #c9a84c; }
+    .timer-controls { display: flex; align-items: center; justify-content: center; gap: 16px; }
+    .ctrl-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid #2a2a2a;
+      background: none;
+      color: #555;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ctrl-btn:hover { border-color: #c9a84c; color: #c9a84c; }
+    .start-btn {
+      padding: 12px 36px;
+      background: #c9a84c;
+      color: #000;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      min-width: 130px;
+      transition: background 0.2s;
+    }
+    .start-btn:hover { background: #e0c068; }
+    .start-btn.pause { background: #1e1e1e; color: #c9a84c; border: 1px solid #c9a84c; }
+    .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .stat-box { background: #111; border: 1px solid #1e1e1e; border-radius: 12px; padding: 14px; text-align: center; }
+    .stat-num { font-size: 1.6rem; font-weight: 500; color: #c9a84c; }
+    .stat-label { font-size: 0.72rem; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+    .goal-wrap { background: #111; border: 1px solid #1e1e1e; border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+    .goal-top { display: flex; justify-content: space-between; font-size: 0.82rem; color: #555; margin-bottom: 10px; }
+    .goal-bar { background: #1a1a1a; border-radius: 10px; height: 6px; overflow: hidden; }
+    .goal-fill { height: 100%; background: linear-gradient(90deg, #c9a84c, #e0c068); border-radius: 10px; transition: width 0.5s ease; width: 0%; }
+    .settings-card { background: #111; border: 1px solid #1e1e1e; border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+    .settings-card h2 { font-size: 0.85rem; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+    .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #1a1a1a; font-size: 0.88rem; color: #aaa; }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-row input { width: 60px; padding: 6px 10px; background: #0a0a0a; border: 1px solid #2a2a2a; border-radius: 8px; color: #c9a84c; font-size: 0.88rem; text-align: center; outline: none; }
+    .setting-row input:focus { border-color: #c9a84c; }
+    .log-card { background: #111; border: 1px solid #1e1e1e; border-radius: 16px; padding: 18px; margin-bottom: 30px; }
+    .log-card h2 { font-size: 0.85rem; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+    .log-entry { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #1a1a1a; font-size: 0.85rem; }
+    .log-entry:last-child { border-bottom: none; }
+    .log-topic { color: #f0f0f0; font-weight: 500; }
+    .log-meta { font-size: 0.75rem; color: #444; margin-top: 2px; }
+    .log-badge { padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: bold; }
+    .Physics   { background: #1a2a3a; color: #4a9eff; border: 1px solid #4a9eff44; }
+    .Chemistry { background: #1a3a2a; color: #4caf50; border: 1px solid #4caf5044; }
+    .Maths     { background: #3a1a3a; color: #c97aff; border: 1px solid #c97aff44; }
+    .Other     { background: #2a2a2a; color: #888; border: 1px solid #44444444; }
+    .empty { color: #333; font-size: 0.82rem; text-align: center; padding: 16px 0; }
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal { background: #141414; border: 1px solid #2a2a2a; border-radius: 20px; padding: 28px 24px; width: 100%; max-width: 360px; text-align: center; }
+    .modal-title { font-size: 1.2rem; font-weight: bold; color: #c9a84c; margin-bottom: 6px; }
+    .modal-sub { font-size: 0.85rem; color: #555; margin-bottom: 20px; }
+    .modal select, .modal input[type="text"] { width: 100%; padding: 10px 14px; background: #0a0a0a; border: 1px solid #2a2a2a; border-radius: 10px; color: #fff; font-size: 0.9rem; margin-bottom: 12px; outline: none; }
+    .modal select:focus, .modal input:focus { border-color: #c9a84c; }
+    .modal select option { background: #111; }
+    .modal button { width: 100%; padding: 12px; background: #c9a84c; color: #000; font-size: 1rem; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; margin-bottom: 8px; }
+    .modal button:hover { background: #e0c068; }
+    .skip-log { background: none !important; color: #444 !important; font-weight: normal !important; font-size: 0.82rem !important; padding: 6px !important; margin: 0 !important; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <a href="../index.html" class="back">← Life OS</a>
+  <h1>⏱ Pomodoro Timer</h1>
+  <p class="subtitle">Focus. Log. Repeat.</p>
+
+  <div class="timer-card">
+    <div class="mode-tabs">
+      <button class="mode-btn active" id="btnFocus" onclick="setMode('focus')">Focus</button>
+      <button class="mode-btn" id="btnShort" onclick="setMode('short')">Short Break</button>
+      <button class="mode-btn" id="btnLong"  onclick="setMode('long')">Long Break</button>
+    </div>
+    <div class="timer-display" id="timerDisplay">25:00</div>
+    <div class="session-dots" id="sessionDots"></div>
+    <div class="timer-controls">
+      <button class="ctrl-btn" onclick="resetTimer()">↺</button>
+      <button class="start-btn" id="startBtn" onclick="toggleTimer()">▶ Start</button>
+      <button class="ctrl-btn" onclick="skipSession()">⏭</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-num" id="statToday">0</div>
+      <div class="stat-label">Today</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" id="statGoal">8</div>
+      <div class="stat-label">Goal</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" id="statStreak">0</div>
+      <div class="stat-label">Day Streak</div>
+    </div>
+  </div>
+
+  <div class="goal-wrap">
+    <div class="goal-top">
+      <span>Daily Progress</span>
+      <span id="goalText">0 / 8</span>
+    </div>
+    <div class="goal-bar">
+      <div class="goal-fill" id="goalFill"></div>
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <h2>⚙ Settings</h2>
+    <div class="setting-row">
+      <label>Focus (min)</label>
+      <input type="number" id="focusMin" value="25" min="1" max="60" onchange="updateSettings()">
+    </div>
+    <div class="setting-row">
+      <label>Short Break (min)</label>
+      <input type="number" id="shortMin" value="5" min="1" max="30" onchange="updateSettings()">
+    </div>
+    <div class="setting-row">
+      <label>Long Break (min)</label>
+      <input type="number" id="longMin" value="15" min="1" max="60" onchange="updateSettings()">
+    </div>
+    <div class="setting-row">
+      <label>Daily Goal</label>
+      <input type="number" id="goalInput" value="8" min="1" max="20" onchange="updateSettings()">
+    </div>
+  </div>
+
+  <div class="log-card">
+    <h2>📋 Session Log</h2>
+    <p class="empty" id="logEmpty">No sessions yet.</p>
+    <div id="logList"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title">🎯 Session Complete!</div>
+    <p class="modal-sub">What did you study?</p>
+    <select id="modalSubject">
+      <option value="Physics">Physics</option>
+      <option value="Chemistry">Chemistry</option>
+      <option value="Maths">Maths</option>
+      <option value="Other">Other</option>
+    </select>
+    <input type="text" id="modalTopic" placeholder="Topic (e.g. Newton's Laws)">
+    <button onclick="saveSession()">Save Session</button>
+    <button class="skip-log" onclick="skipLog()">Skip</button>
+  </div>
+</div>
+
+<script>
+var settings = JSON.parse(localStorage.getItem('pomo_settings')) || { focus:25, short:5, long:15, goal:8 };
+var todayData = JSON.parse(localStorage.getItem('pomo_today')) || { date:'', count:0, log:[] };
+var allDays   = JSON.parse(localStorage.getItem('pomo_all'))   || [];
+var today     = new Date().toDateString();
+
+if (todayData.date !== today) {
+  if (todayData.date) { allDays.push(todayData); localStorage.setItem('pomo_all', JSON.stringify(allDays)); }
+  todayData = { date:today, count:0, log:[] };
+  localStorage.setItem('pomo_today', JSON.stringify(todayData));
+}
+
+var mode     = 'focus';
+var running  = false;
+var seconds  = settings.focus * 60;
+var session  = 0;
+var ticker   = null;
+
+document.getElementById('focusMin').value  = settings.focus;
+document.getElementById('shortMin').value  = settings.short;
+document.getElementById('longMin').value   = settings.long;
+document.getElementById('goalInput').value = settings.goal;
+
+renderAll();
+
+function playChime() {
+  try {
+    var ctx   = new (window.AudioContext || window.webkitAudioContext)();
+    var notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach(function(freq, i) {
+      var osc  = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.18);
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.18);
+      gain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + i * 0.18 + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.18 + 0.6);
+      osc.start(ctx.currentTime + i * 0.18);
+      osc.stop(ctx.currentTime  + i * 0.18 + 0.6);
+    });
+  } catch(e) {}
+}
+
+function toggleTimer() {
+  if (running) { pauseTimer(); } else { startTimer(); }
+}
+
+function startTimer() {
+  running = true;
+  var btn = document.getElementById('startBtn');
+  btn.textContent = '⏸ Pause';
+  btn.classList.add('pause');
+  document.getElementById('timerDisplay').classList.add('running');
+  ticker = setInterval(tick, 1000);
+}
+
+function pauseTimer() {
+  running = false;
+  clearInterval(ticker);
+  var btn = document.getElementById('startBtn');
+  btn.textContent = '▶ Resume';
+  btn.classList.add('pause');
+}
+
+function resetTimer() {
+  clearInterval(ticker);
+  running  = false;
+  seconds  = getModeSeconds(mode);
+  var btn  = document.getElementById('startBtn');
+  btn.textContent = '▶ Start';
+  btn.classList.remove('pause');
+  document.getElementById('timerDisplay').classList.remove('running','brk');
+  renderTimer();
+}
+
+function skipSession() {
+  clearInterval(ticker);
+  running = false;
+  onSessionEnd(false);
+}
+
+function tick() {
+  if (seconds <= 0) {
+    clearInterval(ticker);
+    running = false;
+    playChime();
+    onSessionEnd(true);
+    return;
+  }
+  seconds--;
+  renderTimer();
+}
+
+function onSessionEnd(completed) {
+  var btn = document.getElementById('startBtn');
+  btn.textContent = '▶ Start';
+  btn.classList.remove('pause');
+  document.getElementById('timerDisplay').classList.remove('running');
+
+  if (mode === 'focus' && completed) {
+    session++;
+    todayData.count++;
+    localStorage.setItem('pomo_today', JSON.stringify(todayData));
+    renderStats();
+    showModal();
+    return;
+  }
+  if (mode === 'focus') {
+    setMode(session % 4 === 0 ? 'long' : 'short');
+  } else {
+    setMode('focus');
+  }
+}
+
+function setMode(m) {
+  mode    = m;
+  running = false;
+  seconds = getModeSeconds(m);
+  clearInterval(ticker);
+
+  document.getElementById('btnFocus').classList.remove('active');
+  document.getElementById('btnShort').classList.remove('active');
+  document.getElementById('btnLong').classList.remove('active');
+  if (m === 'focus') document.getElementById('btnFocus').classList.add('active');
+  if (m === 'short') document.getElementById('btnShort').classList.add('active');
+  if (m === 'long')  document.getElementById('btnLong').classList.add('active');
+
+  var display = document.getElementById('timerDisplay');
+  display.classList.remove('running','brk');
+  if (m !== 'focus') display.classList.add('brk');
+
+  var btn = document.getElementById('startBtn');
+  btn.textContent = '▶ Start';
+  btn.classList.remove('pause');
+
+  renderTimer();
+  renderDots();
+}
+
+function getModeSeconds(m) {
+  if (m === 'focus') return settings.focus * 60;
+  if (m === 'short') return settings.short * 60;
+  return settings.long * 60;
+}
+
+function showModal() {
+  document.getElementById('modalOverlay').classList.add('show');
+  document.getElementById('modalTopic').value = '';
+}
+
+function saveSession() {
+  var subject = document.getElementById('modalSubject').value;
+  var topic   = document.getElementById('modalTopic').value.trim() || 'General study';
+  todayData.log.push({
+    subject: subject,
+    topic:   topic,
+    time:    new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
+  });
+  localStorage.setItem('pomo_today', JSON.stringify(todayData));
+  document.getElementById('modalOverlay').classList.remove('show');
+  setMode(session % 4 === 0 ? 'long' : 'short');
+  renderLog();
+}
+
+function skipLog() {
+  document.getElementById('modalOverlay').classList.remove('show');
+  setMode(session % 4 === 0 ? 'long' : 'short');
+}
+
+function updateSettings() {
+  settings.focus = parseInt(document.getElementById('focusMin').value)  || 25;
+  settings.short = parseInt(document.getElementById('shortMin').value)  || 5;
+  settings.long  = parseInt(document.getElementById('longMin').value)   || 15;
+  settings.goal  = parseInt(document.getElementById('goalInput').value) || 8;
+  localStorage.setItem('pomo_settings', JSON.stringify(settings));
+  document.getElementById('statGoal').textContent = settings.goal;
+  if (!running) resetTimer();
+  renderStats();
+}
+
+function renderTimer() {
+  var m = Math.floor(seconds / 60);
+  var s = seconds % 60;
+  document.getElementById('timerDisplay').textContent =
+    (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function renderDots() {
+  var html = '';
+  for (var i = 0; i < 4; i++) {
+    var cls = i < session % 4 ? 'done' : i === session % 4 && mode === 'focus' ? 'current' : '';
+    html += '<div class="dot ' + cls + '"></div>';
+  }
+  document.getElementById('sessionDots').innerHTML = html;
+}
+
+function renderStats() {
+  var streak = 0;
+  if (todayData.count >= settings.goal) streak = 1;
+  var days = allDays.slice().reverse();
+  for (var i = 0; i < days.length; i++) {
+    if (days[i].count >= settings.goal) streak++; else break;
+  }
+  document.getElementById('statToday').textContent  = todayData.count;
+  document.getElementById('statGoal').textContent   = settings.goal;
+  document.getElementById('statStreak').textContent = streak;
+  var pct = Math.min((todayData.count / settings.goal) * 100, 100);
+  document.getElementById('goalFill').style.width  = pct + '%';
+  document.getElementById('goalText').textContent  = todayData.count + ' / ' + settings.goal;
+}
+
+function renderLog() {
+  var list  = document.getElementById('logList');
+  var empty = document.getElementById('logEmpty');
+  list.innerHTML = '';
+  if (todayData.log.length === 0) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  todayData.log.slice().reverse().forEach(function(e) {
+    var div = document.createElement('div');
+    div.className = 'log-entry';
+    div.innerHTML =
+      '<div>' +
+        '<div class="log-topic">' + e.topic + '</div>' +
+        '<div class="log-meta">'  + e.time  + '</div>' +
+      '</div>' +
+      '<span class="log-badge ' + e.subject + '">' + e.subject + '</span>';
+    list.appendChild(div);
+  });
+}
+
+function renderAll() { renderTimer(); renderDots(); renderStats(); renderLog(); }
+</script>
+</body>
+</html>
