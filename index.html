@@ -30,7 +30,7 @@
     }
     .hero {
       text-align: center;
-      margin-bottom: 60px;
+      margin-bottom: 36px;
       animation: fadeUp 0.8s ease forwards;
     }
     .hero-tag {
@@ -66,12 +66,90 @@
       margin-top: 8px;
     }
     .hero-name span { color: #c9a84c; }
+
+    /* Focus Card */
+    .focus-card {
+      background: linear-gradient(135deg, #1a1400 0%, #111 100%);
+      border: 1px solid #c9a84c44;
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 32px;
+      animation: fadeUp 0.8s ease 0.15s forwards;
+      opacity: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .focus-card::before {
+      content: '';
+      position: absolute;
+      top: -50%; right: -20%;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, #c9a84c22 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .focus-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    .focus-icon { font-size: 1.2rem; }
+    .focus-title {
+      font-size: 0.78rem;
+      color: #c9a84c;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: bold;
+    }
+    .focus-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #c9a84c1a;
+      font-size: 0.85rem;
+      position: relative;
+      z-index: 1;
+    }
+    .focus-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .focus-item-icon {
+      font-size: 0.95rem;
+      min-width: 20px;
+      margin-top: 1px;
+    }
+    .focus-item-text { color: #ddd; line-height: 1.5; }
+    .focus-item-text b { color: #c9a84c; }
+    .focus-item-sub { font-size: 0.75rem; color: #555; margin-top: 2px; }
+    .focus-empty {
+      color: #555;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+    .focus-empty b { color: #c9a84c; }
+    .focus-cta {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 6px 16px;
+      background: #c9a84c;
+      color: #000;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      text-decoration: none;
+      position: relative;
+      z-index: 1;
+    }
+
     .stats-bar {
       display: flex;
       justify-content: center;
       gap: 48px;
       margin-bottom: 48px;
-      animation: fadeUp 0.8s ease 0.2s forwards;
+      animation: fadeUp 0.8s ease 0.3s forwards;
       opacity: 0;
     }
     .stat { text-align: center; }
@@ -81,7 +159,7 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      animation: fadeUp 0.8s ease 0.4s forwards;
+      animation: fadeUp 0.8s ease 0.45s forwards;
       opacity: 0;
     }
     .card {
@@ -155,6 +233,16 @@
     <h1>LIFE <span>OS</span></h1>
     <p class="hero-sub">A self-operating system for students<br>who think in systems, not hours.</p>
     <p class="hero-name">Built by <span>Arnav</span> · 16 · India</p>
+  </div>
+
+  <div class="focus-card">
+    <div class="focus-header">
+      <span class="focus-icon">🎯</span>
+      <span class="focus-title">Today's Focus</span>
+    </div>
+    <div id="focusContent">
+      <p class="focus-empty">Loading your recommendations...</p>
+    </div>
   </div>
 
   <div class="stats-bar">
@@ -234,5 +322,90 @@
     <p>Life OS · Built with HTML, CSS, JavaScript · <span>github.com/arnavl2209-netizen</span></p>
   </div>
 </div>
+
+<script>
+function buildRecommendations() {
+  var jeeEntries   = JSON.parse(localStorage.getItem('lifeos_jee'))     || [];
+  var studyEntries = JSON.parse(localStorage.getItem('lifeOS_entries')) || [];
+  var content      = document.getElementById('focusContent');
+  var html         = '';
+  var count        = 0;
+
+  // 1. Weak topics — accuracy below 60%
+  var weakTopics = jeeEntries.filter(function(e){ return e.accuracy < 60; });
+  if (weakTopics.length > 0) {
+    var weakest = weakTopics.reduce(function(a,b){ return a.accuracy < b.accuracy ? a : b; });
+    html += '<div class="focus-item">' +
+              '<span class="focus-item-icon">🔴</span>' +
+              '<div>' +
+                '<div class="focus-item-text">Revise <b>' + weakest.topic + '</b> — only ' + weakest.accuracy + '% accuracy</div>' +
+                '<div class="focus-item-sub">' + weakest.subject + ' · logged ' + weakest.date + '</div>' +
+              '</div>' +
+            '</div>';
+    count++;
+  }
+
+  // 2. Subject with lowest average accuracy
+  if (jeeEntries.length > 0) {
+    var subjects = {};
+    jeeEntries.forEach(function(e){
+      if (!subjects[e.subject]) subjects[e.subject] = { total: 0, count: 0 };
+      subjects[e.subject].total += e.accuracy;
+      subjects[e.subject].count += 1;
+    });
+    var lowestSubject = null, lowestAvg = 101;
+    for (var s in subjects) {
+      var avg = subjects[s].total / subjects[s].count;
+      if (avg < lowestAvg) { lowestAvg = avg; lowestSubject = s; }
+    }
+    if (lowestSubject && count < 3) {
+      html += '<div class="focus-item">' +
+                '<span class="focus-item-icon">📉</span>' +
+                '<div>' +
+                  '<div class="focus-item-text"><b>' + lowestSubject + '</b> is your weakest subject — avg ' + Math.round(lowestAvg) + '% accuracy</div>' +
+                  '<div class="focus-item-sub">Spend extra time here this week</div>' +
+                '</div>' +
+              '</div>';
+      count++;
+    }
+  }
+
+  // 3. Topics not studied recently (stale)
+  if (studyEntries.length > 0 && count < 3) {
+    var recent = studyEntries[studyEntries.length - 1];
+    var avgDepth = ((recent.explain + recent.logic + recent.apply) / 3).toFixed(1);
+    if (avgDepth < 3.5) {
+      html += '<div class="focus-item">' +
+                '<span class="focus-item-icon">🟡</span>' +
+                '<div>' +
+                  '<div class="focus-item-text">Your last topic <b>' + recent.topic + '</b> scored ' + avgDepth + '/5 depth</div>' +
+                  '<div class="focus-item-sub">Consider revisiting before moving on</div>' +
+                '</div>' +
+              '</div>';
+      count++;
+    }
+  }
+
+  // Fallback — not enough data
+  if (count === 0) {
+    if (jeeEntries.length === 0 && studyEntries.length === 0) {
+      html = '<p class="focus-empty">No data yet. Log a session in <b>JEE Tracker</b> or <b>Study Tracker</b> and I\'ll start recommending what to focus on.</p>' +
+             '<a href="JEE-tracker/index.html" class="focus-cta">Log a session →</a>';
+    } else {
+      html = '<div class="focus-item">' +
+               '<span class="focus-item-icon">✅</span>' +
+               '<div>' +
+                 '<div class="focus-item-text">You\'re on track — no major weak spots detected.</div>' +
+                 '<div class="focus-item-sub">Keep logging sessions to refine recommendations</div>' +
+               '</div>' +
+             '</div>';
+    }
+  }
+
+  content.innerHTML = html;
+}
+
+buildRecommendations();
+</script>
 </body>
 </html>
