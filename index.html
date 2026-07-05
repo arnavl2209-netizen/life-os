@@ -413,5 +413,12 @@ function buildRecommendations() {
 
 buildRecommendations();
 </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/life-os/sw.js')
+      .then(function() { console.log('Life OS SW registered'); })
+      .catch(function(e) { console.log('SW error', e); });
+  }
+</script>
 </body>
 </html>
