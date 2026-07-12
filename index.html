@@ -2,9 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
   <title>Life OS</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#c9a84c">
@@ -25,13 +22,99 @@
       overflow-x: hidden;
     }
 
+    /* Splash screen */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: #060606;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      transition: opacity 0.6s ease;
+    }
+
+    #splash.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .splash-bolt {
+      font-size: 3rem;
+      opacity: 0;
+      transform: scale(0.5);
+      animation: boltIn 0.6s ease 0.3s forwards;
+    }
+
+    .splash-title {
+      font-size: clamp(2.5rem, 10vw, 4.5rem);
+      font-weight: 900;
+      letter-spacing: -1px;
+      opacity: 0;
+      transform: scale(0.8);
+      animation: titleIn 0.7s ease 0.8s forwards;
+    }
+
+    .splash-title .s-life {
+      background: linear-gradient(135deg, #c9a84c 0%, #e8c96a 50%, #c9a84c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .splash-title .s-os { color: #fff; margin-left: 10px; }
+
+    .splash-line {
+      width: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+      animation: lineExpand 0.8s ease 1.3s forwards;
+    }
+
+    .splash-sub {
+      font-size: 0.78rem;
+      color: #333;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeIn 0.5s ease 1.6s forwards;
+    }
+
+    @keyframes boltIn {
+      0%   { opacity: 0; transform: scale(0.3); filter: blur(10px); }
+      60%  { transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); filter: blur(0); }
+    }
+
+    @keyframes titleIn {
+      0%   { opacity: 0; transform: scale(0.8) translateY(10px); filter: blur(6px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+    }
+
+    @keyframes lineExpand {
+      0%   { width: 0; }
+      100% { width: 200px; }
+    }
+
+    @keyframes fadeIn {
+      0%   { opacity: 0; transform: translateY(6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Canvas */
     #canvas {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
       z-index: 0;
       pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease;
     }
+
+    #canvas.show { opacity: 1; }
 
     .bg-glow {
       position: fixed;
@@ -45,12 +128,21 @@
       pointer-events: none;
     }
 
+    /* Main content */
     .container {
       position: relative;
       z-index: 1;
       max-width: 620px;
       margin: 0 auto;
       padding: 40px 20px 60px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .container.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .greeting {
@@ -106,10 +198,7 @@
       background-clip: text;
     }
 
-    .os {
-      color: #ffffff;
-      margin-left: 12px;
-    }
+    .os { color: #ffffff; margin-left: 12px; }
 
     .hero-sub {
       font-size: 0.92rem;
@@ -118,17 +207,10 @@
       margin-bottom: 10px;
     }
 
-    .hero-name {
-      font-size: 0.78rem;
-      color: #2a2a2a;
-      font-weight: 500;
-    }
+    .hero-name { font-size: 0.78rem; color: #2a2a2a; font-weight: 500; }
+    .hero-name span { color: #c9a84c; font-weight: 600; }
 
-    .hero-name span {
-      color: #c9a84c;
-      font-weight: 600;
-    }
-
+    /* Dashboard */
     .dashboard {
       background: rgba(201,168,76,0.04);
       border: 1px solid rgba(201,168,76,0.15);
@@ -137,7 +219,12 @@
       margin-bottom: 20px;
       position: relative;
       overflow: hidden;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
+
+    .dashboard.show { opacity: 1; transform: translateY(0); }
 
     .dashboard::before {
       content: '';
@@ -167,10 +254,7 @@
       font-weight: 700;
     }
 
-    .dashboard-date {
-      font-size: 0.72rem;
-      color: #333;
-    }
+    .dashboard-date { font-size: 0.72rem; color: #333; }
 
     .dash-stats {
       display: grid;
@@ -225,11 +309,9 @@
     }
 
     .focus-item:last-child { border-bottom: none; }
-
     .focus-item-text { color: #bbb; line-height: 1.5; }
     .focus-item-text b { color: #c9a84c; }
     .focus-item-sub { font-size: 0.72rem; color: #444; margin-top: 2px; }
-
     .focus-empty { font-size: 0.84rem; color: #333; line-height: 1.6; }
     .focus-empty b { color: #c9a84c; }
 
@@ -245,12 +327,18 @@
       text-decoration: none;
     }
 
+    /* Stats */
     .stats-bar {
       display: flex;
       justify-content: center;
       gap: 48px;
       margin-bottom: 28px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
     }
+
+    .stats-bar.show { opacity: 1; transform: translateY(0); }
 
     .stat { text-align: center; }
 
@@ -272,6 +360,7 @@
       margin-top: 2px;
     }
 
+    /* Cards */
     .grid {
       display: flex;
       flex-direction: column;
@@ -291,6 +380,13 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .card.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .card::before {
@@ -307,7 +403,7 @@
 
     .card:hover {
       border-color: rgba(201,168,76,0.25);
-      transform: translateX(4px);
+      transform: translateX(4px) !important;
       background: rgba(201,168,76,0.04);
     }
 
@@ -332,30 +428,11 @@
     .icon-pomodoro  { background: rgba(201,100,255,0.1); border: 1px solid rgba(201,100,255,0.2); }
 
     .card-body { flex: 1; }
+    .card-title { font-size: 0.92rem; font-weight: 700; color: #e0e0e0; margin-bottom: 3px; }
+    .card-desc  { font-size: 0.78rem; color: #3a3a3a; line-height: 1.5; }
 
-    .card-title {
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: #e0e0e0;
-      margin-bottom: 3px;
-    }
-
-    .card-desc {
-      font-size: 0.78rem;
-      color: #3a3a3a;
-      line-height: 1.5;
-    }
-
-    .card-arrow {
-      font-size: 1rem;
-      color: #222;
-      transition: all 0.3s;
-    }
-
-    .card:hover .card-arrow {
-      color: #c9a84c;
-      transform: translateX(3px);
-    }
+    .card-arrow { font-size: 1rem; color: #222; transition: all 0.3s; }
+    .card:hover .card-arrow { color: #c9a84c; transform: translateX(3px); }
 
     .tag {
       display: inline-flex;
@@ -377,17 +454,30 @@
       font-size: 0.72rem;
       color: #1e1e1e;
       font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.5s ease;
     }
 
+    .footer.show { opacity: 1; }
     .footer span { color: #2a2a2a; }
   </style>
 </head>
 <body>
 
+<!-- Splash Screen -->
+<div id="splash">
+  <div class="splash-bolt">⚡</div>
+  <div class="splash-title">
+    <span class="s-life">LIFE</span><span class="s-os">OS</span>
+  </div>
+  <div class="splash-line"></div>
+  <div class="splash-sub">Personal Operating System</div>
+</div>
+
 <canvas id="canvas"></canvas>
 <div class="bg-glow"></div>
 
-<div class="container">
+<div class="container" id="mainContent">
 
   <div class="greeting">
     <div class="greeting-text" id="greetingText"></div>
@@ -401,7 +491,7 @@
     <p class="hero-name">Built by <span>Arnav</span> · 16 · India</p>
   </div>
 
-  <div class="dashboard">
+  <div class="dashboard" id="dashboard">
     <div class="dashboard-header">
       <div class="dashboard-title">🎯 Today's Dashboard</div>
       <div class="dashboard-date" id="dashDate"></div>
@@ -426,19 +516,19 @@
     </div>
   </div>
 
-  <div class="stats-bar">
+  <div class="stats-bar" id="statsBar">
     <div class="stat">
-      <div class="stat-num" id="statFeatures">6</div>
+      <div class="stat-num">6</div>
       <div class="stat-label">Features</div>
     </div>
     <div class="stat">
-      <div class="stat-num" id="statCommits">100+</div>
+      <div class="stat-num">100+</div>
       <div class="stat-label">Commits</div>
     </div>
   </div>
 
   <div class="grid">
-    <a href="Study-tracker/index.html" class="card">
+    <a href="Study-tracker/index.html" class="card" id="card0">
       <div class="card-icon icon-study">📚</div>
       <div class="card-body">
         <div class="card-title">Study Tracker</div>
@@ -448,7 +538,7 @@
       <div class="card-arrow">→</div>
     </a>
 
-    <a href="Journal-tracker/index.html" class="card">
+    <a href="Journal-tracker/index.html" class="card" id="card1">
       <div class="card-icon icon-journal">📓</div>
       <div class="card-body">
         <div class="card-title">Decision Journal</div>
@@ -458,7 +548,7 @@
       <div class="card-arrow">→</div>
     </a>
 
-    <a href="JEE-tracker/index.html" class="card">
+    <a href="JEE-tracker/index.html" class="card" id="card2">
       <div class="card-icon icon-jee">📊</div>
       <div class="card-body">
         <div class="card-title">JEE Progress Tracker</div>
@@ -468,7 +558,7 @@
       <div class="card-arrow">→</div>
     </a>
 
-    <a href="Habit-Tracker/index.html" class="card">
+    <a href="Habit-Tracker/index.html" class="card" id="card3">
       <div class="card-icon icon-habit">🔥</div>
       <div class="card-body">
         <div class="card-title">Habit Tracker</div>
@@ -478,7 +568,7 @@
       <div class="card-arrow">→</div>
     </a>
 
-    <a href="Analytics/index.html" class="card">
+    <a href="Analytics/index.html" class="card" id="card4">
       <div class="card-icon icon-analytics">📈</div>
       <div class="card-body">
         <div class="card-title">Analytics Dashboard</div>
@@ -488,7 +578,7 @@
       <div class="card-arrow">→</div>
     </a>
 
-    <a href="Pomodoro/index.html" class="card">
+    <a href="Pomodoro/index.html" class="card" id="card5">
       <div class="card-icon icon-pomodoro">⏱</div>
       <div class="card-body">
         <div class="card-title">Pomodoro Timer</div>
@@ -499,12 +589,87 @@
     </a>
   </div>
 
-  <div class="footer">
+  <div class="footer" id="footer">
     <p>Life OS · HTML · CSS · JavaScript · <span>github.com/arnavl2209-netizen</span></p>
   </div>
 </div>
 
 <script>
+// Splash → Main transition
+window.onload = function() {
+  setTimeout(function() {
+    document.getElementById('splash').classList.add('hide');
+    setTimeout(function() {
+      document.getElementById('splash').style.display = 'none';
+    }, 600);
+
+    // Show main content
+    document.getElementById('mainContent').classList.add('show');
+    document.getElementById('canvas').classList.add('show');
+
+    // Stagger cards
+    setTimeout(function() {
+      document.getElementById('dashboard').classList.add('show');
+    }, 200);
+    setTimeout(function() {
+      document.getElementById('statsBar').classList.add('show');
+    }, 350);
+
+    for (var i = 0; i < 6; i++) {
+      (function(index) {
+        setTimeout(function() {
+          var card = document.getElementById('card' + index);
+          if (card) card.classList.add('show');
+        }, 450 + index * 80);
+      })(i);
+    }
+
+    setTimeout(function() {
+      document.getElementById('footer').classList.add('show');
+    }, 1000);
+
+  }, 2500);
+
+  // Particles
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  window.addEventListener('resize', function() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  var pts = [];
+  for (var i = 0; i < 70; i++) {
+    pts.push({
+      x:     Math.random() * canvas.width,
+      y:     Math.random() * canvas.height,
+      r:     Math.random() * 1.4 + 0.4,
+      dx:    (Math.random() - 0.5) * 0.35,
+      dy:    (Math.random() - 0.5) * 0.35,
+      alpha: Math.random() * 0.45 + 0.1
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pts.forEach(function(p) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(201,168,76,' + p.alpha + ')';
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      if (p.x < 0 || p.x > canvas.width)  p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+};
+
 // Greeting
 function updateGreeting() {
   var h = new Date().getHours();
@@ -522,9 +687,9 @@ setInterval(updateGreeting, 60000);
 
 // Dashboard stats
 var today     = new Date().toDateString();
-var pomoToday = JSON.parse(localStorage.getItem('pomo_today')) || { date:'', count:0 };
+var pomoToday = JSON.parse(localStorage.getItem('pomo_today'))   || { date:'', count:0 };
 var todayLog  = JSON.parse(localStorage.getItem('lifeos_today')) || { date:'', done:[] };
-var jeeData   = JSON.parse(localStorage.getItem('lifeos_jee')) || [];
+var jeeData   = JSON.parse(localStorage.getItem('lifeos_jee'))   || [];
 
 document.getElementById('dashPomodoro').textContent = pomoToday.date === today ? pomoToday.count : 0;
 document.getElementById('dashHabits').textContent   = todayLog.date === today  ? todayLog.done.length : 0;
@@ -580,47 +745,6 @@ function buildRecommendations() {
   content.innerHTML = html;
 }
 buildRecommendations();
-
-// Gold particles
-window.onload = function() {
-  var canvas = document.getElementById('canvas');
-  var ctx = canvas.getContext('2d');
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  window.addEventListener('resize', function() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
-
-  var pts = [];
-  for (var i = 0; i < 70; i++) {
-    pts.push({
-      x:     Math.random() * canvas.width,
-      y:     Math.random() * canvas.height,
-      r:     Math.random() * 1.4 + 0.4,
-      dx:    (Math.random() - 0.5) * 0.35,
-      dy:    (Math.random() - 0.5) * 0.35,
-      alpha: Math.random() * 0.45 + 0.1
-    });
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    pts.forEach(function(p) {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(201,168,76,' + p.alpha + ')';
-      ctx.fill();
-      p.x += p.dx;
-      p.y += p.dy;
-      if (p.x < 0 || p.x > canvas.width)  p.dx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-};
 
 // Service Worker
 if ('serviceWorker' in navigator) {
