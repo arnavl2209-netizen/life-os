@@ -6,7 +6,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="page-loader" id="pageLoader">
+  <div class="loader-bolt">⚡</div>
+</div>
 <div class="card">
+  <div class="card page-content" id="pageContent">
   <a href="#" class="back">← Life OS</a>
   <h1>📓 Decision Journal</h1>
   <p>One decision a day. Compounded over years.</p>
@@ -34,5 +38,18 @@
   </div>
 </div>
 <script src="script.js"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    var loader = document.getElementById('pageLoader');
+    var content = document.getElementById('pageContent');
+    if (loader) {
+      loader.classList.add('hide');
+      setTimeout(function() { loader.style.display = 'none'; }, 500);
+    }
+    if (content) content.classList.add('show');
+  }, 600);
+});
+</script>
 </body>
 </html>
