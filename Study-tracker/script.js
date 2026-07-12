@@ -1,3 +1,12 @@
+window.onload = function() {
+  setTimeout(function() {
+    document.getElementById('pageLoader').classList.add('hide');
+    setTimeout(function() {
+      document.getElementById('pageLoader').style.display = 'none';
+    }, 500);
+    document.getElementById('pageContent').classList.add('show');
+  }, 600);
+
 var entries = JSON.parse(localStorage.getItem('lifeos')) || [];
 render();
 
