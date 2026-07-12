@@ -1,4 +1,4 @@
-var CACHE = 'lifeos-v1';
+var CACHE = 'lifeos-v4';
 var PAGES = [
   '/life-os/',
   '/life-os/index.html',
