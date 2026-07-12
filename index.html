@@ -256,3 +256,373 @@
       font-weight: 800;
       background: linear-gradient(135deg, #c9a84c, #e8c96a);
       -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 18px 20px;
+      text-decoration: none;
+      color: #f0f0f0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, #c9a84c, #e8c96a);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+      transform-origin: bottom;
+    }
+
+    .card:hover {
+      border-color: rgba(201,168,76,0.25);
+      transform: translateX(4px);
+      background: rgba(201,168,76,0.04);
+    }
+
+    .card:hover::before { transform: scaleY(1); }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      min-width: 44px;
+    }
+
+    .icon-study     { background: rgba(74,158,255,0.1);  border: 1px solid rgba(74,158,255,0.2); }
+    .icon-journal   { background: rgba(201,168,76,0.1);  border: 1px solid rgba(201,168,76,0.2); }
+    .icon-jee       { background: rgba(76,175,80,0.1);   border: 1px solid rgba(76,175,80,0.2); }
+    .icon-habit     { background: rgba(255,100,50,0.1);  border: 1px solid rgba(255,100,50,0.2); }
+    .icon-analytics { background: rgba(201,168,76,0.1);  border: 1px solid rgba(201,168,76,0.2); }
+    .icon-pomodoro  { background: rgba(201,100,255,0.1); border: 1px solid rgba(201,100,255,0.2); }
+
+    .card-body { flex: 1; }
+
+    .card-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #e0e0e0;
+      margin-bottom: 3px;
+    }
+
+    .card-desc {
+      font-size: 0.78rem;
+      color: #3a3a3a;
+      line-height: 1.5;
+    }
+
+    .card-arrow {
+      font-size: 1rem;
+      color: #222;
+      transition: all 0.3s;
+    }
+
+    .card:hover .card-arrow {
+      color: #c9a84c;
+      transform: translateX(3px);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      margin-top: 5px;
+      background: rgba(76,175,80,0.1);
+      color: #4caf50;
+      border: 1px solid rgba(76,175,80,0.2);
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 48px;
+      font-size: 0.72rem;
+      color: #1e1e1e;
+      font-weight: 500;
+    }
+
+    .footer span { color: #2a2a2a; }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+<div class="bg-glow"></div>
+
+<div class="container">
+
+  <div class="greeting">
+    <div class="greeting-text" id="greetingText"></div>
+    <div class="greeting-time" id="greetingTime"></div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-tag">⚡ Personal Operating System</div>
+    <h1><span class="life">LIFE</span><span class="os">OS</span></h1>
+    <p class="hero-sub">A self-operating system for students<br>who think in systems, not hours.</p>
+    <p class="hero-name">Built by <span>Arnav</span> · 16 · India</p>
+  </div>
+
+  <div class="dashboard">
+    <div class="dashboard-header">
+      <div class="dashboard-title">🎯 Today's Dashboard</div>
+      <div class="dashboard-date" id="dashDate"></div>
+    </div>
+    <div class="dash-stats">
+      <div class="dash-stat">
+        <div class="dash-stat-num" id="dashPomodoro">0</div>
+        <div class="dash-stat-label">Sessions</div>
+      </div>
+      <div class="dash-stat">
+        <div class="dash-stat-num" id="dashHabits">0</div>
+        <div class="dash-stat-label">Habits Done</div>
+      </div>
+      <div class="dash-stat">
+        <div class="dash-stat-num" id="dashJEE">0</div>
+        <div class="dash-stat-label">JEE Sessions</div>
+      </div>
+    </div>
+    <div class="focus-section">
+      <div class="focus-label">🔍 Focus Recommendation</div>
+      <div id="focusContent"></div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num" id="statFeatures">6</div>
+      <div class="stat-label">Features</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="statCommits">100+</div>
+      <div class="stat-label">Commits</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <a href="Study-tracker/index.html" class="card">
+      <div class="card-icon icon-study">📚</div>
+      <div class="card-body">
+        <div class="card-title">Study Tracker</div>
+        <div class="card-desc">Rate understanding across explain, logic and apply.</div>
+        <span class="tag">✅ Live</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="Journal-tracker/index.html" class="card">
+      <div class="card-icon icon-journal">📓</div>
+      <div class="card-body">
+        <div class="card-title">Decision Journal</div>
+        <div class="card-desc">Log one decision daily — decision, reasoning, change.</div>
+        <span class="tag">✅ Live</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="JEE-tracker/index.html" class="card">
+      <div class="card-icon icon-jee">📊</div>
+      <div class="card-body">
+        <div class="card-title">JEE Progress Tracker</div>
+        <div class="card-desc">Track accuracy and weak areas across all subjects.</div>
+        <span class="tag">✅ Live</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="Habit-Tracker/index.html" class="card">
+      <div class="card-icon icon-habit">🔥</div>
+      <div class="card-body">
+        <div class="card-title">Habit Tracker</div>
+        <div class="card-desc">Build daily streaks. Track consistency not perfection.</div>
+        <span class="tag">✅ Live</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="Analytics/index.html" class="card">
+      <div class="card-icon icon-analytics">📈</div>
+      <div class="card-body">
+        <div class="card-title">Analytics Dashboard</div>
+        <div class="card-desc">Visualize study depth, JEE accuracy and habit streaks.</div>
+        <span class="tag">✅ Live</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="Pomodoro/index.html" class="card">
+      <div class="card-icon icon-pomodoro">⏱</div>
+      <div class="card-body">
+        <div class="card-title">Pomodoro Timer</div>
+        <div class="card-desc">25/5 focus sessions with JEE session logging.</div>
+        <span class="tag">✅ Live</span>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+  </div>
+
+  <div class="footer">
+    <p>Life OS · HTML · CSS · JavaScript · <span>github.com/arnavl2209-netizen</span></p>
+  </div>
+</div>
+
+<script>
+// Greeting
+function updateGreeting() {
+  var h = new Date().getHours();
+  var g = h < 12 ? 'Good Morning ⚡' : h < 17 ? 'Good Afternoon ⚡' : 'Good Evening ⚡';
+  document.getElementById('greetingText').textContent = g;
+  var now = new Date();
+  document.getElementById('greetingTime').textContent =
+    now.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long' }) +
+    ' · ' + now.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  document.getElementById('dashDate').textContent =
+    now.toLocaleDateString('en-IN', { day:'numeric', month:'short' });
+}
+updateGreeting();
+setInterval(updateGreeting, 60000);
+
+// Dashboard stats
+var today     = new Date().toDateString();
+var pomoToday = JSON.parse(localStorage.getItem('pomo_today')) || { date:'', count:0 };
+var todayLog  = JSON.parse(localStorage.getItem('lifeos_today')) || { date:'', done:[] };
+var jeeData   = JSON.parse(localStorage.getItem('lifeos_jee')) || [];
+
+document.getElementById('dashPomodoro').textContent = pomoToday.date === today ? pomoToday.count : 0;
+document.getElementById('dashHabits').textContent   = todayLog.date === today  ? todayLog.done.length : 0;
+document.getElementById('dashJEE').textContent      = jeeData.filter(function(e){
+  return e.date === new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+}).length;
+
+// Focus recommender
+function buildRecommendations() {
+  var jeeEntries   = JSON.parse(localStorage.getItem('lifeos_jee'))     || [];
+  var studyEntries = JSON.parse(localStorage.getItem('lifeOS_entries')) || [];
+  var content = document.getElementById('focusContent');
+  var html = '';
+  var count = 0;
+
+  var weakTopics = jeeEntries.filter(function(e){ return e.accuracy < 60; });
+  if (weakTopics.length > 0) {
+    var w = weakTopics.reduce(function(a,b){ return a.accuracy < b.accuracy ? a : b; });
+    html += '<div class="focus-item"><span>🔴</span><div><div class="focus-item-text">Revise <b>' + w.topic + '</b> — ' + w.accuracy + '% accuracy</div><div class="focus-item-sub">' + w.subject + '</div></div></div>';
+    count++;
+  }
+
+  if (jeeEntries.length > 0 && count < 2) {
+    var subs = {};
+    jeeEntries.forEach(function(e){
+      if (!subs[e.subject]) subs[e.subject] = { total:0, n:0 };
+      subs[e.subject].total += e.accuracy;
+      subs[e.subject].n++;
+    });
+    var low = null, lowAvg = 101;
+    for (var s in subs) {
+      var a = subs[s].total / subs[s].n;
+      if (a < lowAvg) { lowAvg = a; low = s; }
+    }
+    if (low) {
+      html += '<div class="focus-item"><span>📉</span><div><div class="focus-item-text"><b>' + low + '</b> needs attention — avg ' + Math.round(lowAvg) + '%</div><div class="focus-item-sub">Weakest subject</div></div></div>';
+      count++;
+    }
+  }
+
+  if (studyEntries.length > 0 && count < 2) {
+    var r = studyEntries[studyEntries.length - 1];
+    var avg = ((r.explain + r.logic + r.apply) / 3).toFixed(1);
+    if (avg < 3.5) {
+      html += '<div class="focus-item"><span>🟡</span><div><div class="focus-item-text">Revisit <b>' + r.topic + '</b> — ' + avg + '/5 depth</div><div class="focus-item-sub">Low depth score</div></div></div>';
+    }
+  }
+
+  if (!html) {
+    html = '<p class="focus-empty">No data yet. Log a session in <b>JEE Tracker</b> to get recommendations.</p><a href="JEE-tracker/index.html" class="focus-cta">Log a session →</a>';
+  }
+
+  content.innerHTML = html;
+}
+buildRecommendations();
+
+// Gold particles
+window.onload = function() {
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  window.addEventListener('resize', function() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  var pts = [];
+  for (var i = 0; i < 70; i++) {
+    pts.push({
+      x:     Math.random() * canvas.width,
+      y:     Math.random() * canvas.height,
+      r:     Math.random() * 1.4 + 0.4,
+      dx:    (Math.random() - 0.5) * 0.35,
+      dy:    (Math.random() - 0.5) * 0.35,
+      alpha: Math.random() * 0.45 + 0.1
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pts.forEach(function(p) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(201,168,76,' + p.alpha + ')';
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      if (p.x < 0 || p.x > canvas.width)  p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+};
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/life-os/sw.js');
+}
+</script>
+</body>
+</html>
