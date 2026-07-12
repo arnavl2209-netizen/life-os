@@ -1,11 +1,16 @@
-window.onload = function() {
+document.addEventListener('DOMContentLoaded', function() {
   setTimeout(function() {
-    document.getElementById('pageLoader').classList.add('hide');
-    setTimeout(function() {
-      document.getElementById('pageLoader').style.display = 'none';
-    }, 500);
-    document.getElementById('pageContent').classList.add('show');
+    var loader = document.getElementById('pageLoader');
+    var content = document.getElementById('pageContent');
+    if (loader) {
+      loader.classList.add('hide');
+      setTimeout(function() {
+        loader.style.display = 'none';
+      }, 500);
+    }
+    if (content) content.classList.add('show');
   }, 600);
+});
 
 var entries = JSON.parse(localStorage.getItem('lifeos')) || [];
 render();
