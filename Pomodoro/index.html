@@ -14,7 +14,39 @@
       padding: 30px 20px;
       min-height: 100vh;
     }
-    .container { width: 100%; max-width: 480px; }
+    .page-loader {
+      position: fixed;
+      inset: 0;
+      background: #060606;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease;
+    }
+    .page-loader.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .loader-bolt {
+      font-size: 1.8rem;
+      animation: loaderPulse 0.6s ease infinite alternate;
+    }
+    @keyframes loaderPulse {
+      0%   { opacity: 0.3; transform: scale(0.9); }
+      100% { opacity: 1;   transform: scale(1.1); }
+    }
+    .container {
+      width: 100%;
+      max-width: 480px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .container.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
     .back { display: inline-block; color: #c9a84c; font-size: 0.82rem; text-decoration: none; margin-bottom: 16px; }
     h1 { color: #c9a84c; font-size: 1.5rem; margin-bottom: 4px; }
     .subtitle { color: #555; font-size: 0.85rem; margin-bottom: 24px; }
@@ -127,7 +159,12 @@
   </style>
 </head>
 <body>
-<div class="container">
+
+<div class="page-loader" id="pageLoader">
+  <div class="loader-bolt">⚡</div>
+</div>
+
+<div class="container" id="pageContent">
   <a href="../index.html" class="back">← Life OS</a>
   <h1>⏱ Pomodoro Timer</h1>
   <p class="subtitle">Focus. Log. Repeat.</p>
@@ -216,6 +253,19 @@
 </div>
 
 <script>
+// Animation
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    var loader = document.getElementById('pageLoader');
+    var content = document.getElementById('pageContent');
+    if (loader) {
+      loader.classList.add('hide');
+      setTimeout(function() { loader.style.display = 'none'; }, 500);
+    }
+    if (content) content.classList.add('show');
+  }, 600);
+});
+
 var settings = JSON.parse(localStorage.getItem('pomo_settings')) || { focus:25, short:5, long:15, goal:8 };
 var todayData = JSON.parse(localStorage.getItem('pomo_today')) || { date:'', count:0, log:[] };
 var allDays   = JSON.parse(localStorage.getItem('pomo_all'))   || [];
