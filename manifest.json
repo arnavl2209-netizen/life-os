@@ -3,6 +3,8 @@
   "short_name": "Life OS",
   "description": "A self-operating system for students who think in systems, not hours.",
   "start_url": "/life-os/",
+    "id": "/life-os/",
+  "scope": "/life-os/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#c9a84c",
